@@ -1,9 +1,39 @@
 ﻿@page "/myorders/{orderId:int}"
+@using System.Threading
+@inject HttpClient Http
 
 <div class="main">
     TODO: Show details for order @OrderId
 </div>
 
 @code {
+    OrderWithStatus orderWithStatus;
+    bool invalidOrder;
+    CancellationTokenSource cancellationTokenSource;
     [Parameter] public int OrderId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        cancellationTokenSource?.Cancel();
+        await PollForUpdatesAsync();
+    }
+
+    async Task PollForUpdatesAsync()
+    {
+        cancellationTokenSource = new CancellationTokenSource();
+        while (!cancellationTokenSource.IsCancellationRequested)
+        {
+            try
+            {
+                invalidOrder = false;
+                orderWithStatus = await Http.GetJsonAsync<OrderWithStatus>($"order/{OrderId}");
+            }
+            catch (Exception ex)
+            {
+                invalidOrder = true;
+                cancellationTokenSource.Cancel();
+                Console.WriteLine(ex);
+            }
+        }
+    }
 }
