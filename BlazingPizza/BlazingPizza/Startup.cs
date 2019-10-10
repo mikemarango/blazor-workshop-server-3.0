@@ -36,11 +36,11 @@ namespace BlazingPizza
             services.AddServerSideBlazor();
             services.AddDbContext<PizzaContext>(options =>
                 options.UseSqlite(@"Data Source=Data\pizza.db"));
-            //services.AddScoped(serviceProvider =>
-            //{
-            //    var navigationManager = serviceProvider.GetRequiredService<NavigationManager>();
-            //    return new HttpClient { BaseAddress = new Uri(navigationManager.BaseUri) };
-            //});
+            services.AddScoped(serviceProvider =>
+            {
+                var navigationManager = serviceProvider.GetRequiredService<NavigationManager>();
+                return new HttpClient { BaseAddress = new Uri(navigationManager.BaseUri) };
+            });
             services.AddResponseCompression(options =>
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -71,6 +71,7 @@ namespace BlazingPizza
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseBlazorDebugging();
             }
             else
             {
