@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazingPizza.Controllers
 {
-    [Route("[controller]"), ApiController]
+    [Route("[controller]"), ApiController, Authorize]
     public class OrdersController : Controller
     {
         public OrdersController(PizzaContext context)
