@@ -3,8 +3,35 @@
 @inject HttpClient Http
 
 <div class="main">
-    TODO: Show details for order @OrderId
+    @if (invalidOrder)
+    {
+        <h2>Nope</h2>
+        <p>Sorry, this order could not be loaded.</p>
+    }
+    else if (orderWithStatus == null)
+    {
+        <text>Loading...</text>
+    }
+    else
+    {
+        <div class="track-order">
+            <div class="track-order-title">
+                <h2>
+                    Order placed @orderWithStatus.Order.CreatedTime.ToLongDateString()
+                </h2>
+                <p class="ml-auto mb-0">
+                    Status: <strong>@orderWithStatus.StatusText</strong>
+                </p>
+            </div>
+            <div class="track-order-body">
+                <div class="track-order-details">
+                    TODO: Order Review goes here
+                </div>
+            </div>
+        </div>
+    }
 </div>
+
 
 @code {
     OrderWithStatus orderWithStatus;
@@ -26,7 +53,7 @@
             try
             {
                 invalidOrder = false;
-                orderWithStatus = await Http.GetJsonAsync<OrderWithStatus>($"order/{OrderId}");
+                orderWithStatus = await Http.GetJsonAsync<OrderWithStatus>($"orders/{OrderId}");
             }
             catch (Exception ex)
             {
@@ -34,6 +61,9 @@
                 cancellationTokenSource.Cancel();
                 Console.WriteLine(ex);
             }
+
+            StateHasChanged();
+            await Task.Delay(4000);
         }
     }
 }
