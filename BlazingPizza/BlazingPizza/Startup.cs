@@ -41,6 +41,7 @@ namespace BlazingPizza
                 var navigationManager = serviceProvider.GetRequiredService<NavigationManager>();
                 return new HttpClient { BaseAddress = new Uri(navigationManager.BaseUri) };
             });
+            services.AddScoped<OrderState>();
             services.AddResponseCompression(options =>
             {
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
